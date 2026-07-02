@@ -1,0 +1,8 @@
+{
+  "item.totem_of_soul_keeping.totem_of_soul_keeping": "Totem of Soul Keeping",
+  "itemGroup.totem_of_soul_keeping": "Totem of Soul Keeping",
+  "tooltip.totem_of_soul_keeping.totem_of_soul_keeping.line1": "Keep this totem in your inventory",
+  "tooltip.totem_of_soul_keeping.totem_of_soul_keeping.line2": "and your belongings will stay with you",
+  "tooltip.totem_of_soul_keeping.totem_of_soul_keeping.line3": "instead of dropping on death",
+  "message.totem_of_soul_keeping.rescued": "A Totem of Soul Keeping shattered, keeping your belongings safe."
+}

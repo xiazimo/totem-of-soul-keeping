@@ -1,0 +1,8 @@
+{
+  "item.totem_of_soul_keeping.totem_of_soul_keeping": "灵魂守护图腾",
+  "itemGroup.totem_of_soul_keeping": "Totem of Soul Keeping",
+  "tooltip.totem_of_soul_keeping.totem_of_soul_keeping.line1": "将此图腾放在背包中",
+  "tooltip.totem_of_soul_keeping.totem_of_soul_keeping.line2": "你的物品会随你一同留存",
+  "tooltip.totem_of_soul_keeping.totem_of_soul_keeping.line3": "而不是在死亡时掉落",
+  "message.totem_of_soul_keeping.rescued": "一枚灵魂守护图腾碎裂了，保住了你的随身物品。"
+}

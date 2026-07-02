@@ -1,0 +1,29 @@
+# gradle
+build/
+.gradle/
+run/
+out/
+
+# 注意：gradle/wrapper/ 必须提交到仓库（含 gradle-wrapper.jar），
+# 这样 clone 后即可直接 ./gradlew build，无需本地预装 gradle。
+
+# ide
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.metadata
+bin/
+*.launch
+eclipse/
+
+# forge mdk
+forge*changelog.txt
+mcmodsrepo/
+
+# os
+.DS_Store
+Thumbs.db
