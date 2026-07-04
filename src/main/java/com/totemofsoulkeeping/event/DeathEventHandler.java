@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -26,6 +27,39 @@ public class DeathEventHandler {
     private static final String TAG_COUNT = "Count";
     private static final String TAG_ITEM = "Item";
     private static final String TAG_XP = "Xp";
+    private static final String TAG_HAS_TOTEM = "HasTotem";
+
+    // 新增：监听实体死亡事件，在玩家死亡时检查背包和副手是否携带守护图腾
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        boolean hasTotem = false;
+        // 检查主背包（36格）
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (stack.getItem() == ModItems.TOTEM_OF_SOUL_KEEPING.get()) {
+                hasTotem = true;
+                break;
+            }
+        }
+        // 检查副手
+        if (!hasTotem) {
+            ItemStack offhand = player.getOffhandItem();
+            if (offhand.getItem() == ModItems.TOTEM_OF_SOUL_KEEPING.get()) {
+                hasTotem = true;
+            }
+        }
+
+        if (hasTotem) {
+            CompoundTag persistent = player.getPersistentData()
+                    .getCompound(Player.PERSISTED_NBT_TAG);
+            player.getPersistentData().put(Player.PERSISTED_NBT_TAG, persistent);
+            persistent.putBoolean(TAG_HAS_TOTEM, true);
+        }
+    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingDrops(LivingDropsEvent event) {
@@ -73,9 +107,14 @@ public class DeathEventHandler {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
-        if (hasRescuePayload(player)) {
+        // 检查是否存在标记，若有则打印 "true" 到聊天框并移除标记
+        CompoundTag persistent = player.getPersistentData()
+                .getCompound(Player.PERSISTED_NBT_TAG);
+        if (persistent.getBoolean(TAG_HAS_TOTEM)) {
+            persistent.remove(TAG_HAS_TOTEM);
             event.setCanceled(true);
         }
+        
     }
 
     @SubscribeEvent
@@ -140,9 +179,4 @@ public class DeathEventHandler {
         return false;
     }
 
-    private static boolean hasRescuePayload(Player player) {
-        return player.getPersistentData()
-                .getCompound(Player.PERSISTED_NBT_TAG)
-                .contains(NBT_KEY);
-    }
 }
