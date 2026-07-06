@@ -19,6 +19,7 @@ out/
 bin/
 *.launch
 eclipse/
+.vscode/
 
 # forge mdk
 forge*changelog.txt

@@ -104,14 +104,7 @@ public class DeathEventHandler {
         if (!ModConfigs.KEEP_EXPERIENCE.get()) {
             return;
         }
-        if (!(event.getEntity() instanceof Player player)) {
-            return;
-        }
-        // 检查是否存在标记，若有则打印 "true" 到聊天框并移除标记
-        CompoundTag persistent = player.getPersistentData()
-                .getCompound(Player.PERSISTED_NBT_TAG);
-        if (persistent.getBoolean(TAG_HAS_TOTEM)) {
-            persistent.remove(TAG_HAS_TOTEM);
+        if(event.getEntity().getPersistentData().contains(Player.PERSISTED_NBT_TAG)) {
             event.setCanceled(true);
         }
         
