@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,55 @@ public class DeathEventHandler {
     private static final String TAG_XP = "Xp";
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        // 动态构建槽位列表（内置）
+        int[] slots = new int[36 + 4 + 1];
+        int idx = 0;
+        for (int i = 0; i <= 35; i++) slots[idx++] = i;
+        for (int i = 100; i <= 103; i++) slots[idx++] = i;
+        slots[idx] = -106;
+
+        boolean found = false;
+        for (int slot : slots) {
+            ItemStack stack = ItemStack.EMPTY;
+            if (slot == -106) {
+                stack = player.getOffhandItem();
+            } else if (slot < player.getInventory().getContainerSize()) {
+                stack = player.getInventory().getItem(slot);
+            }
+            if (!stack.isEmpty() && stack.getItem() == ModItems.TOTEM_OF_SOUL_KEEPING.get()) {
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            CompoundTag persisted = player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
+            player.getPersistentData().put(Player.PERSISTED_NBT_TAG, persisted);
+            CompoundTag hastotem = persisted.getCompound(NBT_KEY);
+            hastotem.putBoolean("hastotem", true);
+            persisted.put(NBT_KEY, hastotem);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onExperienceDrop(LivingExperienceDropEvent event) {
+        if (!ModConfigs.KEEP_EXPERIENCE.get()) {
+            return;
+        }
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+        if (player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getCompound(NBT_KEY).getBoolean("hastotem")) {
+            event.setCanceled(true);   // 保留经验
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingDrops(LivingDropsEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
@@ -35,7 +85,7 @@ public class DeathEventHandler {
         if (event.isCanceled() || event.getDrops().isEmpty()) {
             return;
         }
-        if (!dropsContainTotem(event.getDrops())) {
+        if (!player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getCompound(NBT_KEY).getBoolean("hastotem")) {
             return;
         }
 
@@ -63,16 +113,6 @@ public class DeathEventHandler {
         persistent.put(NBT_KEY, payload);
 
         event.getDrops().clear();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onExperienceDrop(LivingExperienceDropEvent event) {
-        if (!ModConfigs.KEEP_EXPERIENCE.get()) {
-            return;
-        }
-        if(event.getEntity().getPersistentData().contains(Player.PERSISTED_NBT_TAG)) {
-            event.setCanceled(true);
-        }
     }
 
     @SubscribeEvent
@@ -127,14 +167,4 @@ public class DeathEventHandler {
             player.drop(stack, true);
         }
     }
-
-    private static boolean dropsContainTotem(Iterable<ItemEntity> drops) {
-        for (ItemEntity entity : drops) {
-            if (entity.getItem().getItem() == ModItems.TOTEM_OF_SOUL_KEEPING.get()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }
