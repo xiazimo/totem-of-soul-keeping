@@ -1,6 +1,6 @@
-package com.totemofsoulkeeping;
+package com.mo.totemofsoulkeeping;
 
-import com.totemofsoulkeeping.item.TotemOfSoulKeepingItem;
+import com.mo.totemofsoulkeeping.item.TotemOfSoulKeepingItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

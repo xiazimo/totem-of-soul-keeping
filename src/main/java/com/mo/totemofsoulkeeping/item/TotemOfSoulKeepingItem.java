@@ -1,4 +1,4 @@
-package com.totemofsoulkeeping.item;
+package com.mo.totemofsoulkeeping.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

@@ -1,7 +1,7 @@
-package com.totemofsoulkeeping;
+package com.mo.totemofsoulkeeping;
 
 import com.mojang.logging.LogUtils;
-import com.totemofsoulkeeping.event.DeathEventHandler;
+import com.mo.totemofsoulkeeping.event.DeathEventHandler;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;

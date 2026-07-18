@@ -1,4 +1,4 @@
-package com.totemofsoulkeeping;
+package com.mo.totemofsoulkeeping;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
